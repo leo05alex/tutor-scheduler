@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { exportData, importData, clearAllData } from '../utils/exportImport';
+import { pluralize } from '../utils/pluralize';
 import ConfirmModal from '../components/UI/ConfirmModal';
 
 function Settings({ settings, onUpdateSettings }) {
@@ -349,7 +350,7 @@ function Settings({ settings, onUpdateSettings }) {
                                         >
                                             <span className="font-medium">{subject.name}</span>
                                             <span className="text-tertiary" style={{ fontSize: 'var(--font-size-xs)' }}>
-                                                ({topics.length} тем)
+                                                ({topics.length} {pluralize(topics.length, ['тема', 'темы', 'тем'])})
                                             </span>
                                         </div>
                                         <div className="flex gap-2" style={{ flexWrap: 'wrap', paddingLeft: 'var(--space-3)' }}>
