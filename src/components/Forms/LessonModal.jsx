@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { pluralize } from '../../utils/pluralize';
 
 function LessonModal({
     isOpen,
@@ -25,7 +26,8 @@ function LessonModal({
         status: 'scheduled',
         isPaid: false,
         repeat: false,
-        repeatPeriod: 'month'
+        repeatCount: 4,
+        repeatUnit: 'weeks'
     });
 
     const [showTopicSuggestions, setShowTopicSuggestions] = useState(false);
@@ -72,7 +74,8 @@ function LessonModal({
                 status: 'scheduled',
                 isPaid: false,
                 repeat: false,
-                repeatPeriod: 'month'
+                repeatCount: 4,
+                repeatUnit: 'weeks'
             });
             setTopicInputValue('');
         }
@@ -166,7 +169,8 @@ function LessonModal({
         // Если это не новое занятие, удаляем флаги повторения (чтобы не зациклиться если вдруг)
         if (lesson) {
             delete lessonData.repeat;
-            delete lessonData.repeatPeriod;
+            delete lessonData.repeatCount;
+            delete lessonData.repeatUnit;
         }
 
         onSave(lessonData);
@@ -450,27 +454,30 @@ function LessonModal({
                                 </label>
 
                                 {formData.repeat && (
-                                    <div className="flex gap-4" style={{ marginLeft: 'var(--space-6)' }}>
-                                        <label className="form-radio" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer' }}>
-                                            <input
-                                                type="radio"
-                                                name="repeatPeriod"
-                                                value="month"
-                                                checked={formData.repeatPeriod === 'month'}
-                                                onChange={(e) => handleChange('repeatPeriod', e.target.value)}
-                                            />
-                                            <span style={{ fontSize: 'var(--font-size-sm)' }}>На месяц (4 нед.)</span>
-                                        </label>
-                                        <label className="form-radio" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer' }}>
-                                            <input
-                                                type="radio"
-                                                name="repeatPeriod"
-                                                value="year"
-                                                checked={formData.repeatPeriod === 'year'}
-                                                onChange={(e) => handleChange('repeatPeriod', e.target.value)}
-                                            />
-                                            <span style={{ fontSize: 'var(--font-size-sm)' }}>На год (52 нед.)</span>
-                                        </label>
+                                    <div className="flex items-center gap-3" style={{ marginLeft: 'var(--space-6)', marginTop: 'var(--space-3)' }}>
+                                        <span>Повторять:</span>
+                                        <input
+                                            type="number"
+                                            className="form-input"
+                                            style={{ width: '80px', padding: 'var(--space-1) var(--space-2)' }}
+                                            min="1"
+                                            max="52"
+                                            value={formData.repeatCount}
+                                            onChange={(e) => handleChange('repeatCount', parseInt(e.target.value) || 1)}
+                                        />
+                                        <select
+                                            className="form-select"
+                                            style={{ width: '130px', padding: 'var(--space-1) var(--space-4) var(--space-1) var(--space-2)' }}
+                                            value={formData.repeatUnit}
+                                            onChange={(e) => handleChange('repeatUnit', e.target.value)}
+                                        >
+                                            <option value="weeks">
+                                                {pluralize(formData.repeatCount, ['неделю', 'недели', 'недель'])}
+                                            </option>
+                                            <option value="months">
+                                                {pluralize(formData.repeatCount, ['месяц', 'месяца', 'месяцев'])}
+                                            </option>
+                                        </select>
                                     </div>
                                 )}
                             </div>

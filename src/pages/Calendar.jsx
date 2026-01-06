@@ -164,7 +164,10 @@ function Calendar({ settings, onUpdateSettings }) {
                 // Если выбрано повторение, создаем будущие копии
                 if (lessonData.repeat) {
                     const futureLessons = [];
-                    const weeksCount = lessonData.repeatPeriod === 'year' ? 51 : 3; // +3 недели для месяца, +51 для года
+                    // Вычисляем количество недель
+                    const weeksCount = lessonData.repeatUnit === 'months'
+                        ? (lessonData.repeatCount * 4) - 1
+                        : lessonData.repeatCount - 1;
 
                     const startDate = new Date(lessonData.date);
 
@@ -175,10 +178,10 @@ function Calendar({ settings, onUpdateSettings }) {
                         futureLessons.push({
                             ...lessonData,
                             date: futureDate.toISOString(),
-                            repeat: false, // Копии не должны быть "повторяющимися" сами по себе
-                            isPaid: false, // Будущие занятия по умолчанию не оплачены
-                            status: 'scheduled', // Будущие занятия всегда имеют статус "Запланировано"
-                            notes: '' // Заметки не копируются в будущие занятия
+                            repeat: false,
+                            isPaid: false,
+                            status: 'scheduled',
+                            notes: ''
                         });
                     }
 
